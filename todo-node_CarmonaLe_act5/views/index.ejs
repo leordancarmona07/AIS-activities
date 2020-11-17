@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <title>My Todo List App</title>
+
+    <style type="text/css">
+
+    body{
+        background-color: rgb(0, 0, 0);
+        color: white;
+    }
+    h1{
+        margin-top: 10rem;
+        color: skyblue;
+    }
+    form{
+        width: 50%;
+        margin-bottom: 2rem;
+       
+    }
+    ul{
+        list-style-type: decimal;
+        padding-top: 20px;
+    }
+    li{
+        padding-left: 20px;
+    }
+    i{
+       float: right;
+       margin-right: 5%;
+    }
+    i.fa.fa-trash{
+        margin-right: 20%;
+    }
+    ul li.checked {
+        background: rgb(189, 243, 182);
+        color: darkred;
+        text-decoration: line-through;
+    }
+    button{
+        margin-top: 20px;
+    }
+    
+    .fa.fa-trash:hover{
+        color: darkred;
+        opacity: 0.5;
+    }
+    .fa-check-circle{
+        float: left;
+    }
+    .form-container{
+        width: 50%;
+        float: left;
+    }
+    .row{
+        width: 50%;
+        float: right;
+    }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark bg-dark" style="background-color: #e3f2fd;">
+    <a class="navbar" href="http://localhost:3000/">
+        <i class="fa fa-check-circle fa-2x">TODO LIST</i>
+        
+    </a>
+    </nav>
+
+    <div class="container">
+        <div class="form-container">
+            <h1> Enter todo task!</h1>
+            <form id="form" class="col-6 mx-auto" action="" method="post">
+                <div class="input-group">
+                    <input id="task" type="text" class="form-control" name="task" placeholder="Enter todo task...">
+                    <span>
+                        <button type="button" id= "submitBtn" class="btn btn-primary">Add to List</button>
+                    </span>
+                </div>
+            </form>
+        </div>
+       
+        <div class="row">
+            <ul class = "col-6 mx-auto">
+                    <% for(let i = 0; i < todoList.length; i++){ %>
+                        <li> <h4><%= todoList[i].task %><a class="delete" href="/delete/<%=todoList[i]._id%>"><i class="fa fa-trash text-danger">delete</i></a> <a class="update"><i id="<%=todoList[i]._id%>" class="fa fa-edit">update</i></a></h4> </li>
+                    <% } %>    
+            </ul>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        let list = document.querySelector('ul');
+        list.addEventListener('click', function(ev) {
+        if (ev.target.tagName === 'LI' || ev.target.tagName === 'H4') {
+            ev.target.classList.toggle('checked');
+        }
+        }, false);
+        $(document).ready(function(){
+            $("#submitBtn").click(function(){
+                if ($("#task").val().length === 0){
+                    alert("Nothing to add... Please input first!..")
+                }else{
+                    $("#form").submit()
+                }
+            })
+
+            $(".update").click(function(e){
+                e.preventDefault();
+                let id = e.target.id;
+                let updatedTask = prompt("Enter new task label!")
+                if(!updatedTask){
+                    alert("Empty input is invalid!")
+                }else{
+                    let url = "http://localhost:3000/update/";
+
+                    $.ajax({ 
+                        url: url,
+                        type: "post",
+                        data: {title: updatedTask, id: id},
+                        success: function(res) {
+                            window.location.href = "http://localhost:3000/";
+                            alert("Successfully Changed");
+                        },
+                        error: function (error) {
+                            alert("Something went wrong!");
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+</body>
+</html>
